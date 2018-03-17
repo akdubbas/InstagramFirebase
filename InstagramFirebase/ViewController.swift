@@ -7,12 +7,14 @@
 //
 
 import UIKit
-
-class ViewController: UIViewController {
+import Firebase
+import  SVProgressHUD
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let photoButton : UIButton = {
         let button  = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "plus_photo"), for: .normal)
+        button.addTarget(self, action:#selector(handleUploadPhoto) , for: .touchUpInside)
         return button
     }()
     
@@ -22,6 +24,7 @@ class ViewController: UIViewController {
         textField.backgroundColor = UIColor(white: 0, alpha: 0.03)
         textField.borderStyle = .roundedRect
         textField.font = UIFont.systemFont(ofSize: 14)
+        textField.addTarget(self, action: #selector(handleInputChanges), for: .editingChanged)
         return textField
     }()
     
@@ -31,6 +34,7 @@ class ViewController: UIViewController {
         textField.backgroundColor = UIColor(white: 0, alpha: 0.03)
         textField.borderStyle = .roundedRect
         textField.font = UIFont.systemFont(ofSize: 14)
+        textField.addTarget(self, action: #selector(handleInputChanges), for: .editingChanged)
         return textField
     }()
 
@@ -41,6 +45,7 @@ class ViewController: UIViewController {
         textField.backgroundColor = UIColor(white: 0, alpha: 0.03)
         textField.borderStyle = .roundedRect
         textField.font = UIFont.systemFont(ofSize: 14)
+        textField.addTarget(self, action: #selector(handleInputChanges), for: .editingChanged)
         return textField
     }()
     
@@ -51,9 +56,86 @@ class ViewController: UIViewController {
         button.layer.cornerRadius = 5
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.setTitleColor(UIColor.white, for: .normal)
-        
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
         return button
     }()
+    
+    @objc func handleInputChanges()
+    {
+        let isFormValid = emailTextField.text?.characters.count ?? 0 > 0 && userNameTextField.text?.characters.count ?? 0 > 0 && passwordTextField.text?.characters.count ?? 0 > 0
+        
+        if(isFormValid)
+        {
+            signUpButton.isEnabled = true
+            signUpButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
+        }
+        else{
+            signUpButton.isEnabled = false
+            signUpButton.backgroundColor = UIColor.rgb(red: 149, green: 204, blue: 244)
+        }
+        
+    }
+    
+    @objc func handleSignUp(sender : UIButton)
+    {
+        SVProgressHUD.show(withStatus: "Logging in")
+        guard let email = emailTextField.text,!email.isEmpty else {
+            return
+        }
+        guard let password = passwordTextField.text,!password.isEmpty else{
+            return
+        }
+        guard let username = userNameTextField.text, !username.isEmpty else {
+            return
+        }
+    
+        
+        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
+            if(error != nil)
+            {
+                print(error!)
+            }
+          print("User Registered Successfully: ", user?.uid ?? "")
+           
+            let imageName = UUID().uuidString
+            let storageRef = Storage.storage().reference().child("profile_images").child("\(imageName).jpg")
+            
+            guard let profileImage = self.photoButton.imageView?.image else {
+                return
+            }
+            guard let uploadPhoto = UIImageJPEGRepresentation(profileImage, 0.3) else {
+                return
+            }
+            storageRef.putData(uploadPhoto, metadata: nil, completion: { (metadata, error) in
+                if let error = error
+                {
+                    print(error)
+                    return
+                }
+                guard let imageUrl = metadata?.downloadURL()?.absoluteString else{
+                    return
+                }
+                
+                guard let uid = user?.uid else {
+                    return
+                }
+                let userNameValues = ["username":username, "profileImageUrl":imageUrl]
+                let values = [uid:userNameValues]
+                Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (error, ref) in
+                    
+                    if let error = error {
+                        print("Failed to save user Info in db: ", error)
+                    }
+                    print("Successfully saved user in to Database")
+                    SVProgressHUD.dismiss()
+                    
+                })
+                
+            })
+            
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,6 +159,39 @@ class ViewController: UIViewController {
         stackView.anchor(top: photoButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 20, paddingBottom: 0, paddingLeft: 40, paddingRight: -40,width : 0,height : 200)
         
 
+    }
+    
+    @objc func handleUploadPhoto()
+    {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        present(picker, animated: true, completion: nil)
+        
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        var selectedImageFromPicker : UIImage?
+        
+        if let editeditedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
+            selectedImageFromPicker = editeditedImage
+        }
+        if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
+            selectedImageFromPicker = originalImage
+        }
+        if let profileImageView = selectedImageFromPicker {
+            photoButton.setImage(profileImageView.withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        photoButton.layer.cornerRadius = photoButton.frame.width/2
+        photoButton.layer.masksToBounds = true
+        photoButton.layer.borderColor = UIColor.black.cgColor
+        photoButton.layer.borderWidth = 2
+        dismiss(animated: true, completion: nil)
+        
     }
 }
 
