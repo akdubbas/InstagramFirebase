@@ -141,7 +141,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         super.viewDidLoad()
         
         view.addSubview(photoButton)
-        photoButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: nil, paddingTop: 40, paddingBottom: nil, paddingLeft: nil, paddingRight: nil, width: 140, height: 140)
+        photoButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: nil, paddingTop: 40,paddingLeft: nil, paddingBottom: nil, paddingRight: nil, width: 140, height: 140)
         photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         setUpInputFields()
@@ -156,7 +156,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         stackView.spacing = 10
         view.addSubview(stackView)
     
-        stackView.anchor(top: photoButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 20, paddingBottom: 0, paddingLeft: 40, paddingRight: -40,width : 0,height : 200)
+        stackView.anchor(top: photoButton.bottomAnchor, left: view.leftAnchor, bottom: nil, right: view.rightAnchor, paddingTop: 20, paddingLeft: 40, paddingBottom: 0, paddingRight: -40,width : 0,height : 200)
         
 
     }
@@ -197,7 +197,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
 extension UIView {
     
-    func anchor(top : NSLayoutYAxisAnchor?,left : NSLayoutXAxisAnchor?,bottom : NSLayoutYAxisAnchor?, right : NSLayoutXAxisAnchor?, paddingTop : CGFloat?,paddingBottom : CGFloat?,paddingLeft : CGFloat?, paddingRight : CGFloat?, width : CGFloat,height : CGFloat){
+    func anchor(top : NSLayoutYAxisAnchor?,left : NSLayoutXAxisAnchor?,bottom : NSLayoutYAxisAnchor?, right : NSLayoutXAxisAnchor?, paddingTop : CGFloat?,paddingLeft : CGFloat?,paddingBottom : CGFloat?, paddingRight : CGFloat?, width : CGFloat,height : CGFloat){
         
         //Applies to every constraint calling this function
         self.translatesAutoresizingMaskIntoConstraints = false

@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		059411E37A61AAB14CFE261A /* Pods_InstagramFirebaseUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6508ED08F95964BF9171D47 /* Pods_InstagramFirebaseUITests.framework */; };
 		1B08F4487E3EC191AAC91B7F /* Pods_InstagramFirebase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA5E87E787D2555915694BEB /* Pods_InstagramFirebase.framework */; };
+		1E44A781205D93200051B805 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E44A780205D93200051B805 /* MainTabBarController.swift */; };
+		1E44A783205D941E0051B805 /* UserProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E44A782205D941E0051B805 /* UserProfileController.swift */; };
+		1E44A786205E22490051B805 /* UserProfileHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E44A785205E22490051B805 /* UserProfileHeader.swift */; };
 		1ED2506020586BD200CC1F13 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED2505F20586BD200CC1F13 /* AppDelegate.swift */; };
 		1ED2506220586BD200CC1F13 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ED2506120586BD200CC1F13 /* ViewController.swift */; };
 		1ED2506520586BD200CC1F13 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1ED2506320586BD200CC1F13 /* Main.storyboard */; };
@@ -42,6 +45,9 @@
 /* Begin PBXFileReference section */
 		0432C86B64E68E2479115EF3 /* Pods-InstagramFirebaseUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramFirebaseUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-InstagramFirebaseUITests/Pods-InstagramFirebaseUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		176FF8D131E21B29607A3C4C /* Pods-InstagramFirebaseTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramFirebaseTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-InstagramFirebaseTests/Pods-InstagramFirebaseTests.release.xcconfig"; sourceTree = "<group>"; };
+		1E44A780205D93200051B805 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		1E44A782205D941E0051B805 /* UserProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileController.swift; sourceTree = "<group>"; };
+		1E44A785205E22490051B805 /* UserProfileHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileHeader.swift; sourceTree = "<group>"; };
 		1ED2505C20586BD200CC1F13 /* InstagramFirebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstagramFirebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ED2505F20586BD200CC1F13 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1ED2506120586BD200CC1F13 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -95,6 +101,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E44A784205E220B0051B805 /* UserProfile */ = {
+			isa = PBXGroup;
+			children = (
+				1E44A782205D941E0051B805 /* UserProfileController.swift */,
+				1E44A785205E22490051B805 /* UserProfileHeader.swift */,
+			);
+			path = UserProfile;
+			sourceTree = "<group>";
+		};
 		1ED2505320586BD200CC1F13 = {
 			isa = PBXGroup;
 			children = (
@@ -120,9 +135,11 @@
 		1ED2505E20586BD200CC1F13 /* InstagramFirebase */ = {
 			isa = PBXGroup;
 			children = (
+				1E44A784205E220B0051B805 /* UserProfile */,
 				1ED2509020587C1D00CC1F13 /* Utils */,
 				1ED2505F20586BD200CC1F13 /* AppDelegate.swift */,
 				1ED2506120586BD200CC1F13 /* ViewController.swift */,
+				1E44A780205D93200051B805 /* MainTabBarController.swift */,
 				1ED2506320586BD200CC1F13 /* Main.storyboard */,
 				1ED2506920586BD200CC1F13 /* Assets.xcassets */,
 				1ED2506B20586BD200CC1F13 /* LaunchScreen.storyboard */,
@@ -485,7 +502,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1ED2506820586BD200CC1F13 /* InstagramFirebase.xcdatamodeld in Sources */,
+				1E44A786205E22490051B805 /* UserProfileHeader.swift in Sources */,
 				1ED2506220586BD200CC1F13 /* ViewController.swift in Sources */,
+				1E44A783205D941E0051B805 /* UserProfileController.swift in Sources */,
+				1E44A781205D93200051B805 /* MainTabBarController.swift in Sources */,
 				1ED2506020586BD200CC1F13 /* AppDelegate.swift in Sources */,
 				1ED2509220587C5F00CC1F13 /* Extensions.swift in Sources */,
 			);
