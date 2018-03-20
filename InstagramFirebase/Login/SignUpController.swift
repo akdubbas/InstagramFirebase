@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 import  SVProgressHUD
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class SignUpController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     let photoButton : UIButton = {
         let button  = UIButton(type: .system)
@@ -60,6 +60,20 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
         return button
     }()
+    
+    let alreadyHaveAccount : UIButton = {
+        let button = UIButton(type: .system)
+        let attributedTitle = NSMutableAttributedString(string: "Already have an account?  ", attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 14),NSAttributedStringKey.foregroundColor : UIColor.lightGray])
+        attributedTitle.append(NSMutableAttributedString(string: "Sign In!", attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 14),NSAttributedStringKey.foregroundColor : UIColor.rgb(red: 17, green: 154, blue: 237)]))
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(self, action: #selector(gobackToLoginPage), for: .touchUpInside)
+        return button
+    }()
+    
+    @objc func gobackToLoginPage()
+    {
+        _ = navigationController?.popViewController(animated: true)
+    }
     
     @objc func handleInputChanges()
     {
@@ -128,7 +142,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                         print("Failed to save user Info in db: ", error)
                     }
                     print("Successfully saved user in to Database")
+                    guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else{
+                        return
+                    }
+                    mainTabBarController.setUpViewControllers()
                     SVProgressHUD.dismiss()
+                    self.dismiss(animated: true, completion: nil)
                     
                 })
                 
@@ -139,12 +158,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = UIColor.white
         view.addSubview(photoButton)
         photoButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: nil, paddingTop: 40,paddingLeft: nil, paddingBottom: nil, paddingRight: nil, width: 140, height: 140)
         photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         setUpInputFields()
+        
+        view.addSubview(alreadyHaveAccount)
+        alreadyHaveAccount.anchor(top: nil, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 50)
+        
         
     }
     

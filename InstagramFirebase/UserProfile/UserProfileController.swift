@@ -8,11 +8,14 @@
 
 import UIKit
 import Firebase
+import SVProgressHUD
 
 
 class UserProfileController : UICollectionViewController,UICollectionViewDelegateFlowLayout
 {
     var appUser : AppUser?
+    let cellId = "cellId"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -20,9 +23,37 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
         fetchUser()
         
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerId")
+        collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        
+        setUpLogoutButton()
         
     }
+    fileprivate func setUpLogoutButton()
+    {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogoutButton))
+    }
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 130
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = (view.frame.width - 2)/3
+        return CGSize(width: width, height: width)
+    }
+    //Horizontal Spacing
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
     
+    //Vertical Spacing
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
+        cell.backgroundColor = UIColor.green
+        return cell
+    }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerId", for: indexPath) as! UserProfileHeader
@@ -55,6 +86,36 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
         }) { (error) in
             print("Failed to fetch User")
         }
+        
+    }
+    
+    @objc func handleLogoutButton()
+    {
+        
+        let actionSheetController: UIAlertController = UIAlertController(title: "Are you sure?", message: nil, preferredStyle: .actionSheet)
+        
+        //Create and add the Cancel action
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { action -> Void in
+            //Just dismiss the action sheet
+        }
+        
+        let logOutAction: UIAlertAction = UIAlertAction(title: "Log Out",style: .destructive) { action -> Void in
+            do{
+            try Auth.auth().signOut()
+                
+            let loginController = LoginController()
+            let navController = UINavigationController(rootViewController: loginController)
+            self.present(navController, animated: true, completion: nil)
+                
+            }
+            catch let signOutErr{
+                print("Failed to SignOut",signOutErr)
+            }
+            
+        }
+        actionSheetController.addAction(logOutAction)
+        actionSheetController.addAction(cancelAction)
+        present(actionSheetController, animated: true, completion: nil)
     }
 }
 

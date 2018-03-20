@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SVProgressHUD
 
 class UserProfileHeader :UICollectionViewCell {
     
@@ -53,28 +54,33 @@ class UserProfileHeader :UICollectionViewCell {
     
     let postsLabel : UILabel = {
         let label = UILabel()
-        label.text = "10\nposts"
         label.numberOfLines = 0
         label.textAlignment = .center
+        let attributedText = NSMutableAttributedString(string: "11\n", attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: "posts", attributes: [NSAttributedStringKey.foregroundColor :UIColor.lightGray,NSAttributedStringKey.font:UIFont.boldSystemFont(ofSize: 12) ]))
+        label.attributedText = attributedText
+        
         
         return label
     }()
     
     let followersLabel : UILabel = {
         let label = UILabel()
-        label.text = "10\nposts"
         label.numberOfLines = 0
         label.textAlignment = .center
-        
+        let attributedText = NSMutableAttributedString(string: "100\n", attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: "followers", attributes: [NSAttributedStringKey.foregroundColor :UIColor.lightGray,NSAttributedStringKey.font:UIFont.boldSystemFont(ofSize: 12) ]))
+        label.attributedText = attributedText
         return label
     }()
     
     let followingLabel : UILabel = {
         let label = UILabel()
-        label.text = "10\nposts"
         label.numberOfLines = 0
         label.textAlignment = .center
-        
+        let attributedText = NSMutableAttributedString(string: "67\n", attributes: [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: "following", attributes: [NSAttributedStringKey.foregroundColor :UIColor.lightGray,NSAttributedStringKey.font:UIFont.boldSystemFont(ofSize: 12) ]))
+        label.attributedText = attributedText
         return label
     }()
     
@@ -107,7 +113,7 @@ class UserProfileHeader :UICollectionViewCell {
         
         addSubview(editProfileButton)
         
-        editProfileButton.anchor(top: postsLabel.bottomAnchor, left: postsLabel.leftAnchor, bottom: nil, right: followingLabel.rightAnchor, paddingTop: 2,paddingLeft: 0, paddingBottom: 0, paddingRight: -15, width: 0, height: 34)
+        editProfileButton.anchor(top: postsLabel.bottomAnchor, left: postsLabel.leftAnchor, bottom: nil, right: followingLabel.rightAnchor, paddingTop: 2,paddingLeft: 15, paddingBottom: 0, paddingRight: -20, width: 0, height: 34)
         
     }
     
@@ -122,12 +128,26 @@ class UserProfileHeader :UICollectionViewCell {
     
     fileprivate func setUpBottomToolbar()
     {
+        
+        let topDividerView = UIView()
+        topDividerView.backgroundColor = UIColor.lightGray
+        
+        let bottomDividerView = UIView()
+        bottomDividerView.backgroundColor = UIColor.lightGray
+        
      
         let stackView = UIStackView(arrangedSubviews: [gridButton,listButton,bookMarkButton])
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
+        
+        
         addSubview(stackView)
+        addSubview(topDividerView)
+        addSubview(bottomDividerView)
+        
         stackView.anchor(top: nil, left: self.leftAnchor, bottom: self.bottomAnchor, right: self.rightAnchor, paddingTop: 0,paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 50)
+        topDividerView.anchor(top: stackView.topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
+        bottomDividerView.anchor(top: stackView.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0.5)
         
     }
     
@@ -154,6 +174,7 @@ class UserProfileHeader :UICollectionViewCell {
             //need to get on to main thread
             DispatchQueue.main.async {
                 self.profileImageView.image = image
+                
             }
             
             
