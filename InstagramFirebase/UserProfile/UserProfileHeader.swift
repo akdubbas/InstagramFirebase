@@ -10,6 +10,9 @@ import UIKit
 import Firebase
 import SVProgressHUD
 
+
+//This is the Whole User Profile Header for UserProfileController(CollectionView) which contains profile image and user name, User stats like(Posts,followers,following), edit profile, and a stack view at the bottom of the header which contians List view, Grid view and Bookmarks
+
 class UserProfileHeader :UICollectionViewCell {
     
     //This appUser value will be set in UserProfileController.fetchUser method
