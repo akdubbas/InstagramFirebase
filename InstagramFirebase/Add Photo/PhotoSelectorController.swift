@@ -37,7 +37,7 @@ class PhotoSelectorController : UICollectionViewController, UICollectionViewDele
     fileprivate func assetsFetchOptions() -> PHFetchOptions
     {
         let fetchPhotoOptions = PHFetchOptions()
-        //fetchPhotoOptions.fetchLimit = 100
+        fetchPhotoOptions.fetchLimit = 100
         
         //To sort out the latest photos taken just add sort Descriptors to Fetch options to fetch images in descending of creationDate
         let sortDescriptor  = NSSortDescriptor(key: "creationDate", ascending: false)
@@ -100,6 +100,9 @@ class PhotoSelectorController : UICollectionViewController, UICollectionViewDele
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.selectedImage = images[indexPath.item]
         collectionView.reloadData()
+        
+        let indexPath = IndexPath(item: 0, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
     }
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count
@@ -115,10 +118,12 @@ class PhotoSelectorController : UICollectionViewController, UICollectionViewDele
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
+    
+    var header : PhotoSelectorHeader?
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! PhotoSelectorHeader
         
-        
+        self.header = header
         if let selectedPhoto = selectedImage {
             if let index = self.images.index(of: selectedPhoto) {
                 
@@ -149,6 +154,9 @@ class PhotoSelectorController : UICollectionViewController, UICollectionViewDele
     
     @objc func handleNextAction()
     {
-        self.dismiss(animated: true, completion: nil)
+        let sharePhotocontroller = SharePhotoController()
+        sharePhotocontroller.selectedImage = self.header?.latestImageView.image
+        navigationController?.pushViewController(sharePhotocontroller, animated: true)
+        
     }
 }
