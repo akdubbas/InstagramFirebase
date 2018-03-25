@@ -84,7 +84,7 @@ class SharePhotoController : UIViewController{
         //childByAutoId method creates new node each time when user sends a new post
         let ref = userPostRef.childByAutoId()
         
-        let values = ["imageUrl" : imageUrl,"caption" : caption,"imageWidth" : postImage.size.width,"imageHeight" : postImage.size.height] as [String : Any]
+        let values = ["imageUrl" : imageUrl,"caption" : caption,"imageWidth" : postImage.size.width,"imageHeight" : postImage.size.height,"creationDate": Date().timeIntervalSince1970] as [String : Any]
         ref.updateChildValues(values) { (error, ref) in
             if let err = error {
                 print("Error has occured while uploading image to Database",err)
