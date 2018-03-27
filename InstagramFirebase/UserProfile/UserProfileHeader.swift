@@ -17,11 +17,11 @@ class UserProfileHeader :UICollectionViewCell {
     
     //This appUser value will be set in UserProfileController.fetchUser method
     
-    var appUser : AppUser? {
+    var user : User? {
         didSet {
           
-            usernameLabel.text = appUser?.username
-            guard let url = appUser?.profileImageUrl else{
+            usernameLabel.text = user?.username
+            guard let url = user?.profileImageUrl else{
                 return
             }
             self.profileImageView.loadImage(urlString: url)

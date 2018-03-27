@@ -13,7 +13,7 @@ import SVProgressHUD
 
 class UserProfileController : UICollectionViewController,UICollectionViewDelegateFlowLayout
 {
-    var appUser : AppUser?
+    var user: User?
     let cellId = "cellId"
     
     override func viewDidLoad() {
@@ -40,9 +40,10 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
         ref.queryOrdered(byChild: "creationDate").observe(.childAdded, with: { (snapshot) in
             guard let dictionary = snapshot.value as? [String: Any] else { return }
             
-            let post = Post(dictionary: dictionary)
-            self.posts.append(post)
-            
+            guard let user = self.user else { return }
+            let post = Post(user: user,dictionary: dictionary)
+           // self.posts.append(post)
+            self.posts.insert(post, at: 0)
             self.collectionView?.reloadData()
             
         }) { (err) in
@@ -81,7 +82,7 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
     //Header for CollectionView Cell
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerId", for: indexPath) as! UserProfileHeader
-        header.appUser = self.appUser
+        header.user = self.user
         
         //not correct
         //header.addSubView(UIImageView())
@@ -92,25 +93,14 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
     }
     
     
-    fileprivate func fetchUser()
-    {
-        guard let userid = Auth.auth().currentUser?.uid else{
-            return
-        }
-    Database.database().reference().child("users").child(userid).observeSingleEvent(of: .value, with: { (snapshot) in
-            
-        guard let dictionary = snapshot.value as? [String : Any] else{
-            return
-        }
+    fileprivate func fetchUser() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        self.appUser = AppUser(dictionary: dictionary)
-        self.navigationItem.title = self.appUser?.username
-        self.collectionView?.reloadData()
-            
-        }) { (error) in
-            print("Failed to fetch User")
+        Database.fetchUserWithUID(uid: uid) { (user) in
+            self.user = user
+            self.navigationItem.title = self.user?.username
+            self.collectionView?.reloadData()
         }
-        
     }
     
     @objc func handleLogoutButton()
@@ -143,18 +133,6 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
     }
 }
 
-
-struct AppUser {
-    
-    let username : String?
-    let profileImageUrl : String?
-    
-    init(dictionary : [String : Any])
-    {
-        username = dictionary["username"] as? String ?? ""
-        profileImageUrl = dictionary["profileImageUrl"] as? String ?? ""
-    }
-}
 
 
 
