@@ -18,6 +18,7 @@
 		1E5910602069F1E5009E86E0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E59105F2069F1E5009E86E0 /* User.swift */; };
 		1E5910622069F32E009E86E0 /* FirebaseUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E5910612069F32E009E86E0 /* FirebaseUtils.swift */; };
 		1E591065206A986B009E86E0 /* UserSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E591064206A986B009E86E0 /* UserSearchController.swift */; };
+		1E591067206AA5C7009E86E0 /* UserSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E591066206AA5C7009E86E0 /* UserSearchCell.swift */; };
 		1EA2470F2062F3E000CD4668 /* PhotoSelectorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA2470E2062F3E000CD4668 /* PhotoSelectorController.swift */; };
 		1EA2471120631BFE00CD4668 /* PhotoSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA2471020631BFE00CD4668 /* PhotoSelectorCell.swift */; };
 		1EA247132063298C00CD4668 /* PhotoSelectorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EA247122063298C00CD4668 /* PhotoSelectorHeader.swift */; };
@@ -67,6 +68,7 @@
 		1E59105F2069F1E5009E86E0 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		1E5910612069F32E009E86E0 /* FirebaseUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseUtils.swift; sourceTree = "<group>"; };
 		1E591064206A986B009E86E0 /* UserSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchController.swift; sourceTree = "<group>"; };
+		1E591066206AA5C7009E86E0 /* UserSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchCell.swift; sourceTree = "<group>"; };
 		1EA2470E2062F3E000CD4668 /* PhotoSelectorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorController.swift; sourceTree = "<group>"; };
 		1EA2471020631BFE00CD4668 /* PhotoSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorCell.swift; sourceTree = "<group>"; };
 		1EA247122063298C00CD4668 /* PhotoSelectorHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorHeader.swift; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				1E591064206A986B009E86E0 /* UserSearchController.swift */,
+				1E591066206AA5C7009E86E0 /* UserSearchCell.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -599,6 +602,7 @@
 				1E5910602069F1E5009E86E0 /* User.swift in Sources */,
 				1EA2471A20645F4D00CD4668 /* UserProfilePhotoCell.swift in Sources */,
 				1ED2509220587C5F00CC1F13 /* Extensions.swift in Sources */,
+				1E591067206AA5C7009E86E0 /* UserSearchCell.swift in Sources */,
 				1EA2471120631BFE00CD4668 /* PhotoSelectorCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
