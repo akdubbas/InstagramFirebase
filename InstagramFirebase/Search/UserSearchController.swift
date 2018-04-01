@@ -48,9 +48,10 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
                 }
                 let user = User(uid: key, dictionary: userDictionary)
                 self.users.append(user)
-                print(key, user.username)
+                
             })
             
+            //sort users names in Ascending order to display in Collection view 
             self.users.sort(by: { (u1, u2) -> Bool in
                 return u1.username.compare(u2.username) == .orderedAscending
             })
