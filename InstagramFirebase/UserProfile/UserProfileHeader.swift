@@ -19,12 +19,41 @@ class UserProfileHeader :UICollectionViewCell {
     
     var user : User? {
         didSet {
-          
-            usernameLabel.text = user?.username
             guard let url = user?.profileImageUrl else{
                 return
             }
             self.profileImageView.loadImage(urlString: url)
+            usernameLabel.text = user?.username
+            setEditFollowButton()
+            
+        }
+    }
+    
+    //Configure Edit or Follow button depending upon current or user selected from search results
+    fileprivate func setEditFollowButton()
+    {
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
+        
+        guard let userId = user?.uid else { return }
+        
+        if currentLoggedInUserId == userId {
+            //edit profile
+        } else {
+            
+            // check if following
+            Database.database().reference().child("following").child(currentLoggedInUserId).child(userId).observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                if let isFollowing = snapshot.value as? Int, isFollowing == 1 {
+                    
+                    self.editProfileButton.setTitle("Unfollow", for: .normal)
+                    
+                } else {
+                    self.setupFollowStyle()
+                }
+                
+            }, withCancel: { (err) in
+                print("Failed to check if following:", err)
+            })
         }
     }
     
@@ -91,7 +120,7 @@ class UserProfileHeader :UICollectionViewCell {
         return label
     }()
     
-    let editProfileButton : UIButton = {
+    lazy var editProfileButton : UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Edit Profile", for: .normal)
         button.setTitleColor(UIColor.black, for: .normal)
@@ -99,8 +128,59 @@ class UserProfileHeader :UICollectionViewCell {
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 1
         button.layer.cornerRadius = 3
+        button.addTarget(self, action: #selector(handleEditFollowButton), for: .touchUpInside)
         return button
     }()
+    
+    
+    func setupFollowStyle()
+    {
+        editProfileButton.setTitle("Follow", for: .normal)
+        editProfileButton.backgroundColor = UIColor.rgb(red: 17, green: 154, blue: 237)
+        editProfileButton.setTitleColor(.white, for: .normal)
+        editProfileButton.layer.borderColor = UIColor(white: 0, alpha: 0.2).cgColor
+    }
+    @objc func handleEditFollowButton()
+    {
+        print("Execute edit profile / follow / unfollow logic...")
+        
+        guard let currentLoggedInUserId = Auth.auth().currentUser?.uid else { return }
+        
+        guard let userId = user?.uid else { return }
+        
+        if editProfileButton.titleLabel?.text == "Unfollow" {
+            
+            //unfollow
+            Database.database().reference().child("following").child(currentLoggedInUserId).child(userId).removeValue(completionBlock: { (err, ref) in
+                if let err = err {
+                    print("Failed to unfollow user:", err)
+                    return
+                }
+                
+                print("Successfully unfollowed user:", self.user?.username ?? "")
+                
+                self.setupFollowStyle()
+            })
+            
+        } else {
+            //follow
+            let ref = Database.database().reference().child("following").child(currentLoggedInUserId)
+            
+            let values = [userId: 1]
+            ref.updateChildValues(values) { (err, ref) in
+                if let err = err {
+                    print("Failed to follow user:", err)
+                    return
+                }
+                
+                print("Successfully followed user: ", self.user?.username ?? "")
+                
+                self.editProfileButton.setTitle("Unfollow", for: .normal)
+                self.editProfileButton.backgroundColor = .white
+                self.editProfileButton.setTitleColor(.black, for: .normal)
+            }
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
