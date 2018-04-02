@@ -43,6 +43,12 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
             
             guard let dictionaries = snapshot.value as? [String: Any] else { return }
             dictionaries.forEach({ (key,value) in //key and value will be of type Any, so cast it to String and AnyObject
+                
+                if key == Auth.auth().currentUser?.uid {
+                    //do not add ourselves to the searched Usernames
+                    return
+                }
+                
                 guard let userDictionary = value as? [String : Any] else {
                     return
                 }
@@ -74,6 +80,7 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
         navigationItem.titleView = searchBar
         collectionView?.register(UserSearchCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.alwaysBounceVertical = true
+        collectionView?.keyboardDismissMode = .onDrag
         fetchUsers()
     }
     
@@ -89,6 +96,24 @@ class UserSearchController: UICollectionViewController, UICollectionViewDelegate
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width, height: 66)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        searchBar.isHidden = false
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        
+        searchBar.isHidden = true
+        searchBar.resignFirstResponder()
+        
+        let user = filteredUsers[indexPath.item]
+        print(user)
+        let controller = UserProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        controller.userId = user.uid
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
 
