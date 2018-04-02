@@ -12,19 +12,62 @@ import Firebase
 class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     let cellId = "cellId"
+    var posts = [Post]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleUpdatefeed), name: SharePhotoController.updateFeedNotificationName, object: nil)
+        
         collectionView?.backgroundColor = .white
         
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: cellId)
         
-        setupNavigationItems()
+        let refreshController = UIRefreshControl()
+        refreshController.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView?.refreshControl = refreshController
         
-        fetchPosts()
+        setupNavigationItems()
+        fetchAllPosts()
+       
     }
     
-    var posts = [Post]()
+    @objc func handleUpdatefeed()
+    {
+        handleRefresh()
+    }
+    
+    @objc func handleRefresh()
+    {
+        //if you Unfollow anyone and then do refresh, Remove all posts and load them again with updated content
+        posts.removeAll()
+        fetchAllPosts()
+    }
+    
+    fileprivate func fetchAllPosts()
+    {
+        fetchPosts()
+        fetchFollowingUserIds()
+    }
+    
+    fileprivate func fetchFollowingUserIds() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        Database.database().reference().child("following").child(uid).observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            guard let userIdsDictionary = snapshot.value as? [String: Any] else { return }
+            
+            userIdsDictionary.forEach({ (key, value) in
+                Database.fetchUserWithUID(uid: key, completion: { (user) in
+                    self.fetchPostsWithUser(user: user)
+                })
+            })
+            
+        }) { (err) in
+            print("Failed to fetch following user ids:", err)
+        }
+    }
+    
+    
     fileprivate func fetchPosts() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
@@ -35,8 +78,10 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     fileprivate func fetchPostsWithUser(user: User) {
+        
         let ref = Database.database().reference().child("posts").child(user.uid)
         ref.observeSingleEvent(of: .value, with: { (snapshot) in
+            self.collectionView?.refreshControl?.endRefreshing()
             guard let dictionaries = snapshot.value as? [String: Any] else { return }
             
             dictionaries.forEach({ (key, value) in
@@ -45,6 +90,10 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 let post = Post(user: user, dictionary: dictionary)
                 
                 self.posts.append(post)
+            })
+            
+            self.posts.sort(by: { (p1, p2) -> Bool in
+                return p1.creationDate.compare(p2.creationDate) == .orderedDescending
             })
             
             self.collectionView?.reloadData()

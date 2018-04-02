@@ -141,23 +141,3 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
