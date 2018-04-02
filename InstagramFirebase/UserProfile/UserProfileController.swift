@@ -15,6 +15,7 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
 {
     var user: User?
     let cellId = "cellId"
+    var userId : String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,14 +27,18 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
         collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
         
         setUpLogoutButton()
-        fetchOrderedPosts()
+        
         
     }
     
     var posts = [Post]()
     
     fileprivate func fetchOrderedPosts() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
+        //After calling fetchUser we set the user either from Login or Search Controller
+        guard let uid = user?.uid else{
+            return
+        }
         let ref = Database.database().reference().child("posts").child(uid)
         
         //perhaps later on we'll implement some pagination of data
@@ -42,7 +47,7 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
             
             guard let user = self.user else { return }
             let post = Post(user: user,dictionary: dictionary)
-           // self.posts.append(post)
+            //self.posts.append(post)
             self.posts.insert(post, at: 0)
             self.collectionView?.reloadData()
             
@@ -94,12 +99,14 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
     
     
     fileprivate func fetchUser() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
+        guard let uid = userId ?? Auth.auth().currentUser?.uid else { return }
         
         Database.fetchUserWithUID(uid: uid) { (user) in
             self.user = user
             self.navigationItem.title = self.user?.username
+            
             self.collectionView?.reloadData()
+            self.fetchOrderedPosts()
         }
     }
     
