@@ -31,7 +31,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         fetchAllPosts()
        
     }
-    
+    //Notification Observer notifies to fetch updated posts whenever user uploads new picture 
     @objc func handleUpdatefeed()
     {
         handleRefresh()
