@@ -19,12 +19,34 @@ class CameraController : UIViewController
         return button
     }()
     
+    
+    
+    let capturePhotoButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(#imageLiteral(resourceName: "capture_photo"), for: .normal)
+        button.addTarget(self, action: #selector(handleCapturePhoto), for: .touchUpInside)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubview(dismissButton)
+        
         setUpCaptureSession()
-        dismissButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, paddingTop: 17, paddingLeft: 0, paddingBottom: 0, paddingRight: -12, width: 50, height: 50)
+       setupHUD()
+    }
+    
+    fileprivate func setupHUD() {
+        view.addSubview(capturePhotoButton)
+        capturePhotoButton.anchor(top: nil, left: nil, bottom: view.bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: -60, paddingRight: 0, width: 80, height: 80)
+        capturePhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        view.addSubview(dismissButton)
+        dismissButton.anchor(top: view.topAnchor, left: nil, bottom: nil, right: view.rightAnchor, paddingTop: 20, paddingLeft: 0, paddingBottom: 0, paddingRight: -15, width: 50, height: 50)
+    }
+    
+    @objc func handleCapturePhoto() {
+        print("Capturing photo...")
     }
     
     func setUpCaptureSession()
@@ -54,6 +76,7 @@ class CameraController : UIViewController
         //3. setup output preview
         let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
         previewLayer.frame = view.frame
+        previewLayer.videoGravity = .resizeAspectFill
         view.layer.addSublayer(previewLayer)
         
         captureSession.startRunning()
