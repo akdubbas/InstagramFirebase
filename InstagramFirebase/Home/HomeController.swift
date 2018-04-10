@@ -109,6 +109,8 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     @objc func handleCamera()
     {
         print("camera")
+        let cameraController = CameraController()
+        present(cameraController, animated: true, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
