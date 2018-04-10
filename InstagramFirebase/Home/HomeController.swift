@@ -20,9 +20,7 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
         NotificationCenter.default.addObserver(self, selector: #selector(handleUpdatefeed), name: SharePhotoController.updateFeedNotificationName, object: nil)
         
         collectionView?.backgroundColor = .white
-        
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: cellId)
-        
         let refreshController = UIRefreshControl()
         refreshController.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView?.refreshControl = refreshController
@@ -105,6 +103,12 @@ class HomeController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     func setupNavigationItems() {
         navigationItem.titleView = UIImageView(image:#imageLiteral(resourceName: "logo2"))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
+    }
+    
+    @objc func handleCamera()
+    {
+        print("camera")
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
