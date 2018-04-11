@@ -11,7 +11,16 @@ import Foundation
 
 import UIKit
 
+/*custom Delegation
+Define a protocol*/
+protocol HomePostDelegate {
+    func didTapComment(post : Post)
+}
+
 class HomePostCell: UICollectionViewCell {
+    
+    //define a variable of type HomePostDelegate
+    var delegate : HomePostDelegate?
     
     var post: Post? {
         didSet {
@@ -84,9 +93,10 @@ class HomePostCell: UICollectionViewCell {
         return button
     }()
     
-    let commentButton: UIButton = {
+    lazy var commentButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "comment").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handleComments), for: .touchUpInside)
         return button
     }()
     
@@ -107,6 +117,16 @@ class HomePostCell: UICollectionViewCell {
         label.numberOfLines = 0
         return label
     }()
+    
+   @objc  func handleComments()
+    {
+        guard let post = self.post else {
+            return
+        }
+        //then call the delegate method and don't forget to conform this custom cell to self otherwise delegate will be nil here (can be found at cellForItem)
+        
+        delegate?.didTapComment(post: post)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
