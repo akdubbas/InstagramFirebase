@@ -35,6 +35,11 @@ class CameraController : UIViewController, AVCapturePhotoCaptureDelegate
         setUpCaptureSession()
        setupHUD()
     }
+    //to hide the top elements like battery, cellular signal
+    override var prefersStatusBarHidden: Bool
+    {
+        return true
+    }
     
     fileprivate func setupHUD() {
         view.addSubview(capturePhotoButton)
@@ -60,14 +65,21 @@ class CameraController : UIViewController, AVCapturePhotoCaptureDelegate
         #endif
     }
     
-     func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         
-        let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoSampleBuffer!, previewPhotoSampleBuffer: previewPhotoSampleBuffer!)
+        let imageData =  photo.fileDataRepresentation()
         
         let previewImage = UIImage(data: imageData!)
-        let previewImageView = UIImageView(image: previewImage)
-        view.addSubview(previewImageView)
-        previewImageView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: nil, paddingLeft: nil, paddingBottom: nil, paddingRight: nil, width: 0, height: 0)
+        let containerView = PreviewPhotoContainerView()
+        containerView.previewImageView.image = previewImage
+        view.addSubview(containerView)
+        containerView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+        
+        /*let previewImageView = UIImageView(image: previewImage)
+         view.addSubview(previewImageView)
+         previewImageView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+         
+         print("Finish processing photo sample buffer...")*/
         
         
     }
