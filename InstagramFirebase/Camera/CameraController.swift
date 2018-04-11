@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import AVFoundation
 
-class CameraController : UIViewController
+class CameraController : UIViewController, AVCapturePhotoCaptureDelegate
 {
     let dismissButton : UIButton = {
         let button = UIButton(type: .system)
@@ -47,8 +47,32 @@ class CameraController : UIViewController
     
     @objc func handleCapturePhoto() {
         print("Capturing photo...")
+        
+        let settings = AVCapturePhotoSettings()
+        
+        // do not execute camera capture for simulator
+        #if (!arch(x86_64))
+        guard let previewFormatType = settings.availablePreviewPhotoPixelFormatTypes.first else{
+            return
+        }
+        settings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewFormatType]
+        output.capturePhoto(with: settings, delegate: self)
+        #endif
     }
     
+     func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+        
+        let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoSampleBuffer!, previewPhotoSampleBuffer: previewPhotoSampleBuffer!)
+        
+        let previewImage = UIImage(data: imageData!)
+        let previewImageView = UIImageView(image: previewImage)
+        view.addSubview(previewImageView)
+        previewImageView.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: nil, paddingLeft: nil, paddingBottom: nil, paddingRight: nil, width: 0, height: 0)
+        
+        
+    }
+    //declare this outside the function to collect captured image
+    let output = AVCapturePhotoOutput()
     func setUpCaptureSession()
     {
         let captureSession = AVCaptureSession()
@@ -67,7 +91,6 @@ class CameraController : UIViewController
             print("Error while capturing Session", err)
         }
         //2. setup outputs
-        let output = AVCapturePhotoOutput()
         if captureSession.canAddOutput(output)
         {
             captureSession.addOutput(output)
