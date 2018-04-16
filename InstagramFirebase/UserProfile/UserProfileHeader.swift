@@ -13,7 +13,15 @@ import SVProgressHUD
 
 //This is the Whole User Profile Header for UserProfileController(CollectionView) which contains profile image and user name, User stats like(Posts,followers,following), edit profile, and a stack view at the bottom of the header which contians List view, Grid view and Bookmarks
 
+
+protocol UserProfileHeaderDelegate {
+    func didChangeToListView()
+    func didChangeToGridView()
+}
+
 class UserProfileHeader :UICollectionViewCell {
+    
+    var delegate: UserProfileHeaderDelegate?
     
     //This appUser value will be set in UserProfileController.fetchUser method
     
@@ -62,18 +70,35 @@ class UserProfileHeader :UICollectionViewCell {
         return iv
     }()
     
-    let gridButton : UIButton = {
+    lazy var gridButton : UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "grid"), for: .normal)
        //button.tintColor = UIColor(white : 0,alpha : 0.1)
+         button.addTarget(self, action: #selector(handleChangeToGridView), for: .touchUpInside)
         return button
     }()
-    let listButton : UIButton = {
+    
+    @objc func handleChangeToGridView() {
+        print("Changing to grid view")
+        gridButton.tintColor = .mainBlue()
+        listButton.tintColor = UIColor(white: 0, alpha: 0.2)
+        delegate?.didChangeToGridView()
+    }
+    
+    lazy var listButton : UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "list"), for: .normal)
         button.tintColor = UIColor(white : 0,alpha : 0.2)
+          button.addTarget(self, action: #selector(handleChangeToListView), for: .touchUpInside)
         return button
     }()
+    
+    @objc func handleChangeToListView() {
+        print("Changing to list view")
+        listButton.tintColor = .mainBlue()
+        gridButton.tintColor = UIColor(white: 0, alpha: 0.2)
+        delegate?.didChangeToListView()
+    }
     let bookMarkButton : UIButton = {
         let button = UIButton(type:.system)
         button.setImage(#imageLiteral(resourceName: "ribbon"), for: .normal)
