@@ -33,6 +33,7 @@ class CommentsController : UICollectionViewController, UICollectionViewDelegateF
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
+        commentTextField.resignFirstResponder()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
