@@ -15,6 +15,7 @@ import UIKit
 Define a protocol*/
 protocol HomePostDelegate {
     func didTapComment(post : Post)
+    func didLike(for cell: HomePostCell)
 }
 
 class HomePostCell: UICollectionViewCell {
@@ -26,6 +27,7 @@ class HomePostCell: UICollectionViewCell {
         didSet {
             guard let postImageUrl = post?.imageUrl else { return }
             
+        likeButton.setImage(post?.hasLiked == true ? #imageLiteral(resourceName: "like_selected").withRenderingMode(.alwaysOriginal) : #imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal), for: .normal)
             photoImageView.loadImage(urlString: postImageUrl)
             
             usernameLabel.text = "TEST USERNAME"
@@ -37,7 +39,7 @@ class HomePostCell: UICollectionViewCell {
             
             userProfileImageView.loadImage(urlString: profileImageUrl)
             
-             captionLabel.text = post?.caption
+             //captionLabel.text = post?.caption
             
             setupAttributedCaption()
         }
@@ -87,9 +89,10 @@ class HomePostCell: UICollectionViewCell {
         return button
     }()
     
-    let likeButton: UIButton = {
+    lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "like_unselected").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handleLike), for: .touchUpInside)
         return button
     }()
     
@@ -126,6 +129,11 @@ class HomePostCell: UICollectionViewCell {
         //then call the delegate method and don't forget to conform this custom cell to self otherwise delegate will be nil here (can be found at cellForItem)
         
         delegate?.didTapComment(post: post)
+    }
+    
+    @objc func handleLike() {
+        print("Handling like from within cell...")
+        delegate?.didLike(for: self)
     }
     
     override init(frame: CGRect) {
