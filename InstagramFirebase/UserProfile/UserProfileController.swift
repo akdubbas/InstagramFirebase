@@ -40,7 +40,15 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
         collectionView?.register(UserProfilePhotoCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: homePostCellId)
         setUpLogoutButton()
-        
+    
+    }
+    
+    fileprivate func pagination()
+    {
+        /*Fetch 5 - 6 posts at a time, depending on requirement.
+         remember last fetched post and then repeat the above method till n
+ 
+         */
         
     }
     
