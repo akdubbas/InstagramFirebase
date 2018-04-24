@@ -43,12 +43,37 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
     
     }
     
-    fileprivate func pagination()
+    fileprivate func paginatePosts()
     {
         /*Fetch 5 - 6 posts at a time, depending on requirement.
          remember last fetched post and then repeat the above method till n
- 
          */
+        
+        guard let uid = self.user?.uid else{ return }
+        let ref = Database.database().reference().child("posts").child(uid)
+        
+        let query = ref.queryOrderedByKey().queryLimited(toFirst: 5)
+        
+        query.observeSingleEvent(of: .value, with: { (snapshot) in
+            let allObjects = snapshot.children.allObjects as? [DataSnapshot]
+            allObjects?.forEach({ (snapshot) in
+                print(snapshot.key)
+                guard let user = self.user else {
+                    return
+                }
+                guard let dictionary = snapshot.value as? [String:Any] else {
+                    return
+                }
+                let post = Post(user: user,dictionary: dictionary)
+                self.posts.append(post)
+                //self.posts.insert(post, at: 0)
+            })
+            self.collectionView?.reloadData()
+            
+        }) { (error) in
+            print("Failed to paginate :", error)
+        }
+        
         
     }
     
@@ -145,7 +170,8 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
             self.navigationItem.title = self.user?.username
             
             self.collectionView?.reloadData()
-            self.fetchOrderedPosts()
+            //self.fetchOrderedPosts()
+            self.paginatePosts()
         }
     }
     
