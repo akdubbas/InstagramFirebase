@@ -154,7 +154,7 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        //fire of the paginate cell when you reach last item in Posts array
+        //fire of the paginate cell when you reach last item in Posts array and if you don't use isPagingFinished then you keep calling paginatePosts where reloading collectionView will never settle
         if indexPath.item == self.posts.count - 1 && !isPagingFinished{
             print("Paginating for posts")
             paginatePosts()
