@@ -42,7 +42,7 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
         setUpLogoutButton()
     
     }
-    
+    var isPagingFinished = false
     fileprivate func paginatePosts()
     {
         /*Fetch 5 - 6 posts at a time, depending on requirement.
@@ -52,11 +52,28 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
         guard let uid = self.user?.uid else{ return }
         let ref = Database.database().reference().child("posts").child(uid)
         
-        let query = ref.queryOrderedByKey().queryLimited(toFirst: 5)
+        var query = ref.queryOrderedByKey()
         
-        query.observeSingleEvent(of: .value, with: { (snapshot) in
-            let allObjects = snapshot.children.allObjects as? [DataSnapshot]
-            allObjects?.forEach({ (snapshot) in
+        if posts.count > 0{
+            let value = posts.last?.id //start retrieving from last post in array
+            query = query.queryStarting(atValue:value)
+        }
+        
+        query.queryLimited(toFirst: 5).observeSingleEvent(of: .value, with: { (snapshot) in
+            
+            guard var allObjects = snapshot.children.allObjects as? [DataSnapshot] else{
+                return
+            }
+            
+            if allObjects.count < 4 {
+               self.isPagingFinished = true
+            }
+            
+            //post repeats itself when we start retrieving from last item in array
+            if self.posts.count > 0 {
+                  allObjects.removeFirst()
+            }
+            allObjects.forEach({ (snapshot) in
                 print(snapshot.key)
                 guard let user = self.user else {
                     return
@@ -64,7 +81,8 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
                 guard let dictionary = snapshot.value as? [String:Any] else {
                     return
                 }
-                let post = Post(user: user,dictionary: dictionary)
+                var post = Post(user: user,dictionary: dictionary)
+                post.id = snapshot.key
                 self.posts.append(post)
                 //self.posts.insert(post, at: 0)
             })
@@ -135,6 +153,13 @@ class UserProfileController : UICollectionViewController,UICollectionViewDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        //fire of the paginate cell when you reach last item in Posts array
+        if indexPath.item == self.posts.count - 1 && !isPagingFinished{
+            print("Paginating for posts")
+            paginatePosts()
+            
+        }
         
         if isGridView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserProfilePhotoCell
