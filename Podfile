@@ -11,6 +11,7 @@ target 'InstagramFirebase' do
  pod 'Firebase/Database'
  pod 'Firebase/Storage'
  pod 'SVProgressHUD'
+ pod 'Firebase/Messaging'
 
   target 'InstagramFirebaseTests' do
     inherit! :search_paths
