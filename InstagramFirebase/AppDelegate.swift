@@ -9,9 +9,10 @@
 import UIKit
 import CoreData
 import Firebase
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
@@ -19,10 +20,54 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        FirebaseApp.configure()
+      FirebaseApp.configure()
       window = UIWindow()
       window?.rootViewController = MainTabBarController()
-        return true
+        
+      attemptRegisterForNotifications(application: application)
+      return true
+    }
+    fileprivate func attemptRegisterForNotifications(application : UIApplication){
+        
+        print("Trying to Register Apple Push Notification services")
+        
+        //we can be notified when we successfully registered under messaging
+        //and finally have capability my phone to talk with Firebase
+        Messaging.messaging().delegate = self
+        
+        //want to receive notifications while app is open
+        UNUserNotificationCenter.current().delegate = self
+        
+        //before registering you must - authorize user notification
+        let options : UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: options) { (granted, err) in
+            if let error = err{
+                print(error)
+            }
+            if granted {
+                print("User granted permissions")
+            }
+            else{
+                print("User denied permissions")
+            }
+        }
+        application.registerForRemoteNotifications()
+    }
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        
+        print("Registered FCM with token:", fcmToken)
+    }
+    
+    //listen for user notifications
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        completionHandler(.alert)
+    }
+    
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print("Registered for Notifications:", deviceToken)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
