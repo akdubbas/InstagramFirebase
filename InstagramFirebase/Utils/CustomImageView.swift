@@ -35,7 +35,10 @@ public class CustomImageView : UIImageView
             let photoImage = UIImage(data: imageData)
             
             DispatchQueue.main.async {
+                
                 self.image = photoImage
+                
+                
             }
             
             }.resume()

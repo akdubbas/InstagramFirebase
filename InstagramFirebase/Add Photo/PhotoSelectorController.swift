@@ -37,7 +37,7 @@ class PhotoSelectorController : UICollectionViewController, UICollectionViewDele
     fileprivate func assetsFetchOptions() -> PHFetchOptions
     {
         let fetchPhotoOptions = PHFetchOptions()
-        fetchPhotoOptions.fetchLimit = 100
+        //fetchPhotoOptions.fetchLimit = 100
         
         //To sort out the latest photos taken just add sort Descriptors to Fetch options to fetch images in descending of creationDate
         let sortDescriptor  = NSSortDescriptor(key: "creationDate", ascending: false)
